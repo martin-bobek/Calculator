@@ -1,5 +1,9 @@
-﻿using System.ComponentModel;
+﻿using System;
+using System.Collections.Generic;
+using System.Collections.ObjectModel;
+using System.ComponentModel;
 using System.Diagnostics;
+using System.Windows.Input;
 
 namespace Calculator.ViewModel
 {
@@ -7,6 +11,14 @@ namespace Calculator.ViewModel
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private string displayString;
+        private readonly ReadOnlyCollection<ICommand> numCommands;
+        private readonly Model.Model model;
+
+        public ViewModel(Model.Model model)
+        {
+            this.model = model ?? throw new ArgumentNullException("model");
+            CreateCommands(out numCommands);
+        }
 
         public string Display
         {
@@ -20,7 +32,30 @@ namespace Calculator.ViewModel
                 OnPropertyChanged("Display");
             }
         }
+        public ReadOnlyCollection<ICommand> NumCommands
+        {
+            get { return numCommands; }
+        }
 
+        private void OnNumberCommand(int num)
+        {
+            // TODO - implement number entry logic here
+            Display += num;
+        }
+        private void CreateCommands(out ReadOnlyCollection<ICommand> numCommands)
+        {
+            numCommands = new ReadOnlyCollection<ICommand>(CreateNumCommands());
+        }
+        private List<ICommand> CreateNumCommands()
+        {
+            var commands = new List<ICommand>();
+            for (int num = 0; num <= 9; num++)
+            {
+                int captured = num;
+                commands.Add(new RelayCommand(() => OnNumberCommand(captured)));
+            }
+            return commands;
+        }
         private void OnPropertyChanged(string propertyName)
         {
             VerifyPropertyName(propertyName);
