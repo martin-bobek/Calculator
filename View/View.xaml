@@ -3,10 +3,14 @@
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
-        xmlns:local="clr-namespace:Calculator"
+        xmlns:vm="clr-namespace:Calculator.ViewModel"
         mc:Ignorable="d"
         SizeToContent="WidthAndHeight" SnapsToDevicePixels="True"
         ResizeMode="NoResize" Title="Calculator">
+
+    <Window.DataContext>
+        <vm:ViewModel />
+    </Window.DataContext>
 
     <Window.Resources>
         <GridLength x:Key="gridSize">50</GridLength>
@@ -15,7 +19,8 @@
 
     <DockPanel>
         <TextBox DockPanel.Dock="Top" Margin="10,10,10,0" FontSize="24"
-                 FontFamily="Consolas" TextAlignment="Right" />
+                 FontFamily="Consolas" TextAlignment="Right" IsReadOnly="True"
+                 Text="{Binding Path=Display, Mode=OneWay}" />
 
         <Grid Margin="{StaticResource btnMargin}">
             <Grid.ColumnDefinitions>
@@ -33,16 +38,26 @@
                 <RowDefinition Height="{StaticResource gridSize}" />
             </Grid.RowDefinitions>
 
-            <Button Grid.Row="0" Grid.Column="0" Margin="{StaticResource btnMargin}">1</Button>
-            <Button Grid.Row="0" Grid.Column="1" Margin="{StaticResource btnMargin}">2</Button>
-            <Button Grid.Row="0" Grid.Column="2" Margin="{StaticResource btnMargin}">3</Button>
-            <Button Grid.Row="1" Grid.Column="0" Margin="{StaticResource btnMargin}">4</Button>
-            <Button Grid.Row="1" Grid.Column="1" Margin="{StaticResource btnMargin}">5</Button>
-            <Button Grid.Row="1" Grid.Column="2" Margin="{StaticResource btnMargin}">6</Button>
-            <Button Grid.Row="2" Grid.Column="0" Margin="{StaticResource btnMargin}">7</Button>
-            <Button Grid.Row="2" Grid.Column="1" Margin="{StaticResource btnMargin}">8</Button>
-            <Button Grid.Row="2" Grid.Column="2" Margin="{StaticResource btnMargin}">9</Button>
-            <Button Grid.Row="3" Grid.Column="0" Margin="{StaticResource btnMargin}">0</Button>
+            <Button Grid.Row="0" Grid.Column="0" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=NumCommands[1]}">1</Button>
+            <Button Grid.Row="0" Grid.Column="1" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=NumCommands[2]}">2</Button>
+            <Button Grid.Row="0" Grid.Column="2" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=NumCommands[3]}">3</Button>
+            <Button Grid.Row="1" Grid.Column="0" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=NumCommands[4]}">4</Button>
+            <Button Grid.Row="1" Grid.Column="1" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=NumCommands[5]}">5</Button>
+            <Button Grid.Row="1" Grid.Column="2" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=NumCommands[6]}">6</Button>
+            <Button Grid.Row="2" Grid.Column="0" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=NumCommands[7]}">7</Button>
+            <Button Grid.Row="2" Grid.Column="1" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=NumCommands[8]}">8</Button>
+            <Button Grid.Row="2" Grid.Column="2" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=NumCommands[9]}">9</Button>
+            <Button Grid.Row="3" Grid.Column="0" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=NumCommands[0]}">0</Button>
 
             <Button Grid.Row="3" Grid.Column="1" Margin="{StaticResource btnMargin}">.</Button>
             <Button Grid.Row="3" Grid.Column="2" Margin="{StaticResource btnMargin}">+/-</Button>

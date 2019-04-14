@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Diagnostics;
@@ -14,9 +13,9 @@ namespace Calculator.ViewModel
         private readonly ReadOnlyCollection<ICommand> numCommands;
         private readonly Model.Model model;
 
-        public ViewModel(Model.Model model)
+        public ViewModel()
         {
-            this.model = model ?? throw new ArgumentNullException("model");
+            model = new Model.Model();
             CreateCommands(out numCommands);
         }
 
