@@ -60,16 +60,23 @@
                     Command="{Binding Path=NumCommands[0]}">0</Button>
 
             <Button Grid.Row="3" Grid.Column="1" Margin="{StaticResource btnMargin}">.</Button>
-            <Button Grid.Row="3" Grid.Column="2" Margin="{StaticResource btnMargin}">+/-</Button>
+            <Button Grid.Row="3" Grid.Column="2" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=OpCommands[Neg]}">+/-</Button>
 
             <Button Grid.Row="0" Grid.Column="3" Margin="{StaticResource btnMargin}">CE</Button>
             <Button Grid.Row="0" Grid.Column="4" Margin="{StaticResource btnMargin}">C</Button>
 
-            <Button Grid.Row="1" Grid.Column="3" Margin="{StaticResource btnMargin}">x</Button>
-            <Button Grid.Row="1" Grid.Column="4" Margin="{StaticResource btnMargin}">/</Button>
-            <Button Grid.Row="2" Grid.Column="3" Margin="{StaticResource btnMargin}">+</Button>
-            <Button Grid.Row="2" Grid.Column="4" Margin="{StaticResource btnMargin}">-</Button>
-            <Button Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2" Margin="{StaticResource btnMargin}">=</Button>
+            <Button Grid.Row="1" Grid.Column="3" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=OpCommands[Mult]}">x</Button>
+            <Button Grid.Row="1" Grid.Column="4" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=OpCommands[Div]}">/</Button>
+            <Button Grid.Row="2" Grid.Column="3" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=OpCommands[Add]}">+</Button>
+            <Button Grid.Row="2" Grid.Column="4" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=OpCommands[Sub]}">-</Button>
+            <Button Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2"
+                    Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=OpCommands[Equals]}">=</Button>
         </Grid>
     </DockPanel>
 </Window>
