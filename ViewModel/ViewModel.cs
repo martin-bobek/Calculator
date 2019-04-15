@@ -6,7 +6,7 @@ using System.Windows.Input;
 
 namespace Calculator.ViewModel
 {
-    public enum Operation { Add, Sub, Mult, Div, Neg, Equals, Last = Equals };
+    public enum Operation { Add, Sub, Mult, Div, Equals, Last = Equals };
 
     public class ViewModel : INotifyPropertyChanged
     {
@@ -14,8 +14,10 @@ namespace Calculator.ViewModel
         private string displayString;
         private readonly ReadOnlyCollection<ICommand> numCommands;
         private readonly ReadOnlyDictionary<Operation, ICommand> opCommands;
-        private Operation current = Operation.Add;
         private readonly Model.Model model;
+        private Operation current;
+        private bool overwriteDisplay = true;
+        private bool cleared = true;
 
         public ViewModel()
         {
@@ -47,33 +49,46 @@ namespace Calculator.ViewModel
 
         private void OnNumberCommand(int num)
         {
-            // TODO - implement number entry logic here
-            Display += num;
+            if (overwriteDisplay)
+            {
+                Display = num.ToString();
+                overwriteDisplay = false;
+                cleared = false;
+            }
+            else
+                Display += num;
         }
         private void OnOperationCommand(Operation op)
         {
-            // TODO - Implement
-            switch (op)
+            if (!cleared && !overwriteDisplay)
+                PerformCurrentOperation();
+            if (!cleared)
+                current = op;
+            overwriteDisplay = true;
+        }
+        private void PerformCurrentOperation()
+        {
+            double value = double.Parse(displayString);
+            switch (current)
             {
                 case Operation.Add:
-                    Display = "Add";
+                    model.Add(value);
                     break;
                 case Operation.Sub:
-                    Display = "Subtract";
+                    model.Subtract(value);
                     break;
                 case Operation.Mult:
-                    Display = "Multiply";
+                    model.Multiply(value);
                     break;
                 case Operation.Div:
-                    Display = "Divide";
-                    break;
-                case Operation.Neg:
-                    Display = "Negate";
+                    model.Divide(value);
                     break;
                 case Operation.Equals:
-                    Display = "Equals";
+                    model.ClearAccumulator();
+                    model.Add(value);
                     break;
             }
+            Display = model.Accumulator.ToString();
         }
         private void CreateCommands(out ReadOnlyCollection<ICommand> numCommands,
                                     out ReadOnlyDictionary<Operation, ICommand> opCommands)
