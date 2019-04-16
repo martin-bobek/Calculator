@@ -14,6 +14,7 @@ namespace Calculator.ViewModel
         private string displayString;
         private readonly ReadOnlyCollection<ICommand> numCommands;
         private readonly ReadOnlyDictionary<Operation, ICommand> opCommands;
+        private readonly ICommand negCommand;
         private readonly Model.Model model;
         private Operation current;
         private bool overwriteDisplay = true;
@@ -22,7 +23,9 @@ namespace Calculator.ViewModel
         public ViewModel()
         {
             model = new Model.Model();
-            CreateCommands(out numCommands, out opCommands);
+            CreateCommands(out numCommands, 
+                           out opCommands, 
+                           out negCommand);
         }
 
         public string Display
@@ -46,6 +49,10 @@ namespace Calculator.ViewModel
         {
             get { return opCommands; }
         }
+        public ICommand NegateCommand
+        {
+            get { return negCommand; }
+        }
 
         private void OnNumberCommand(int num)
         {
@@ -53,10 +60,10 @@ namespace Calculator.ViewModel
             {
                 Display = num.ToString();
                 overwriteDisplay = false;
-                cleared = false;
             }
             else
                 Display += num;
+            cleared = false;
         }
         private void OnOperationCommand(Operation op)
         {
@@ -65,6 +72,32 @@ namespace Calculator.ViewModel
             if (!cleared)
                 current = op;
             overwriteDisplay = true;
+        }
+        private void OnNegateCommand()
+        {
+            if (overwriteDisplay)
+            {
+                if (cleared || current != Operation.Equals)
+                {
+                    Display = "-";
+                    overwriteDisplay = false;
+                }
+                else if (overwriteDisplay)
+                {
+                    model.Multiply(-1);
+                    Display = model.Accumulator.ToString();
+                    current = Operation.Equals;
+                }
+            }
+            else
+            {
+                if (Display == "")
+                    Display = "-";
+                else if (Display[0] == '-')
+                    Display = Display.Substring(1);
+                else
+                    Display = "-" + Display;
+            }
         }
         private void PerformCurrentOperation()
         {
@@ -91,10 +124,12 @@ namespace Calculator.ViewModel
             Display = model.Accumulator.ToString();
         }
         private void CreateCommands(out ReadOnlyCollection<ICommand> numCommands,
-                                    out ReadOnlyDictionary<Operation, ICommand> opCommands)
+                                    out ReadOnlyDictionary<Operation, ICommand> opCommands,
+                                    out ICommand negCommand)
         {
             numCommands = new ReadOnlyCollection<ICommand>(CreateNumCommands());
             opCommands = new ReadOnlyDictionary<Operation, ICommand>(CreateOpCommands());
+            negCommand = new RelayCommand(OnNegateCommand);
         }
         private List<ICommand> CreateNumCommands()
         {
