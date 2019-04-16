@@ -6,23 +6,21 @@ using System.Windows.Input;
 
 namespace Calculator.ViewModel
 {
-    public enum Operation { Add, Sub, Mult, Div, Equals, Last = Equals };
-
     public class ViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
         private string displayString;
         private readonly ReadOnlyCollection<ICommand> numCommands;
         private readonly ReadOnlyDictionary<Operation, ICommand> opCommands;
+        private readonly ICommand evalCommand;
         private readonly Model.Model model;
-        private Operation current;
         private readonly KeyState state;
 
         public ViewModel()
         {
             model = new Model.Model();
             state = new KeyState();
-            CreateCommands(out numCommands, out opCommands);
+            CreateCommands(out numCommands, out opCommands, out evalCommand);
         }
 
         public string Display
@@ -46,9 +44,15 @@ namespace Calculator.ViewModel
         {
             get { return opCommands; }
         }
+        public ICommand EvaluateCommand
+        {
+            get { return evalCommand; }
+        }
 
         private void OnNumberCommand(int num)
         {
+            if (state.CanClearAccumulator)
+                model.ClearAccumulator();
             if (state.CanOverwrite)
             {
                 Display = num.ToString();
@@ -59,19 +63,29 @@ namespace Calculator.ViewModel
         }
         private void OnOperationCommand(Operation op)
         {
+            if (state.CanStoreOperand)
+                ReadOperand();
             if (state.CanPerformOperation)
             {
                 PerformCurrentOperation();
                 state.OnOperationPerformed();
             }
             if (state.CanStoreOperation)
-                current = op;
+                state.CurrentOperation = op;
+        }
+        private void OnEvaluate()
+        {
+            if (state.CanStoreOperand)
+                ReadOperand();
+            if (state.CanPerformOperation)
+            {
+                PerformCurrentOperation();
+                state.OnEvaluate();
+            }
         }
         private void PerformCurrentOperation()
         {
-            double value = double.Parse(displayString);
-            model.Operand = value;
-            switch (current)
+            switch (state.CurrentOperation)
             {
                 case Operation.Add:
                     model.Add();
@@ -85,18 +99,20 @@ namespace Calculator.ViewModel
                 case Operation.Div:
                     model.Divide();
                     break;
-                case Operation.Equals:
-                    model.ClearAccumulator();
-                    model.Add();
-                    break;
             }
             Display = model.Accumulator.ToString();
         }
+        private void ReadOperand()
+        {
+            model.Operand = double.Parse(Display);
+        }
         private void CreateCommands(out ReadOnlyCollection<ICommand> numCommands,
-                                    out ReadOnlyDictionary<Operation, ICommand> opCommands)
+                                    out ReadOnlyDictionary<Operation, ICommand> opCommands,
+                                    out ICommand evalCommand)
         {
             numCommands = new ReadOnlyCollection<ICommand>(CreateNumCommands());
             opCommands = new ReadOnlyDictionary<Operation, ICommand>(CreateOpCommands());
+            evalCommand = new RelayCommand(OnEvaluate);
         }
         private List<ICommand> CreateNumCommands()
         {
