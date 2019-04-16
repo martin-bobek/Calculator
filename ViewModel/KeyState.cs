@@ -29,13 +29,19 @@
         {
             get { return state == State.Editing; }
         }
+        public bool CanEvaluate
+        {
+            get { return state == State.Editing ||
+                         state == State.Evaluated; }
+        }
         public bool CanStoreOperation
         {
             get { return state != State.Reset; }
         }
         public bool CanStoreOperand
         {
-            get { return state != State.Reset; }
+            get { return state == State.Editing ||
+                         state == State.NextOp; }
         }
         public bool CanClearAccumulator
         {

@@ -77,7 +77,7 @@ namespace Calculator.ViewModel
         {
             if (state.CanStoreOperand)
                 ReadOperand();
-            if (state.CanPerformOperation)
+            if (state.CanEvaluate)
             {
                 PerformCurrentOperation();
                 state.OnEvaluate();
