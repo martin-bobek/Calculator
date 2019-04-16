@@ -69,23 +69,24 @@ namespace Calculator.ViewModel
         private void PerformCurrentOperation()
         {
             double value = double.Parse(displayString);
+            model.Operand = value;
             switch (current)
             {
                 case Operation.Add:
-                    model.Add(value);
+                    model.Add();
                     break;
                 case Operation.Sub:
-                    model.Subtract(value);
+                    model.Subtract();
                     break;
                 case Operation.Mult:
-                    model.Multiply(value);
+                    model.Multiply();
                     break;
                 case Operation.Div:
-                    model.Divide(value);
+                    model.Divide();
                     break;
                 case Operation.Equals:
                     model.ClearAccumulator();
-                    model.Add(value);
+                    model.Add();
                     break;
             }
             Display = model.Accumulator.ToString();

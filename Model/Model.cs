@@ -3,26 +3,27 @@
     public class Model
     {
         public double Accumulator { get; private set; }
+        public double Operand { private get; set; }
 
         public void ClearAccumulator()
         {
             Accumulator = 0;
         }
-        public void Add(double value)
+        public void Add()
         {
-            Accumulator += value;
+            Accumulator += Operand;
         }
-        public void Subtract(double value)
+        public void Subtract()
         {
-            Accumulator -= value;
+            Accumulator -= Operand;
         }
-        public void Multiply(double value)
+        public void Multiply()
         {
-            Accumulator *= value;
+            Accumulator *= Operand;
         }
-        public void Divide(double value)
+        public void Divide()
         {
-            Accumulator /= value;
+            Accumulator /= Operand;
         }
     }
 }
