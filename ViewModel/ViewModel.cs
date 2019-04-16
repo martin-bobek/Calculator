@@ -16,12 +16,12 @@ namespace Calculator.ViewModel
         private readonly ReadOnlyDictionary<Operation, ICommand> opCommands;
         private readonly Model.Model model;
         private Operation current;
-        private bool overwriteDisplay = true;
-        private bool cleared = true;
+        private readonly KeyState state;
 
         public ViewModel()
         {
             model = new Model.Model();
+            state = new KeyState();
             CreateCommands(out numCommands, out opCommands);
         }
 
@@ -49,22 +49,23 @@ namespace Calculator.ViewModel
 
         private void OnNumberCommand(int num)
         {
-            if (overwriteDisplay)
+            if (state.CanOverwrite)
             {
                 Display = num.ToString();
-                overwriteDisplay = false;
-                cleared = false;
+                state.OnOverwrite();
             }
             else
                 Display += num;
         }
         private void OnOperationCommand(Operation op)
         {
-            if (!cleared && !overwriteDisplay)
+            if (state.CanPerformOperation)
+            {
                 PerformCurrentOperation();
-            if (!cleared)
+                state.OnOperationPerformed();
+            }
+            if (state.CanStoreOperation)
                 current = op;
-            overwriteDisplay = true;
         }
         private void PerformCurrentOperation()
         {
