@@ -4,7 +4,7 @@
 
     class KeyState
     {
-        private enum State { Reset, Editing, NextOp, Evaluated };
+        private enum State { Reset, Editing, NextOp, Evaluated, NoChain };
         private State state = State.Reset;
         private Operation op;
 
@@ -21,9 +21,10 @@
 
         public bool CanOverwrite
         {
-            get { return state == State.Reset  ||
-                         state == State.NextOp ||
-                         state == State.Evaluated; }
+            get { return state == State.Reset     ||
+                         state == State.NextOp    ||
+                         state == State.Evaluated ||
+                         state == State.NoChain; }
         }
         public bool CanPerformOperation
         {
@@ -40,12 +41,13 @@
         }
         public bool CanStoreOperand
         {
-            get { return state == State.Editing ||
-                         state == State.NextOp; }
+            get { return state == State.Editing; }
         }
         public bool CanClearAccumulator
         {
-            get { return state == State.Evaluated; }
+            get { return state == State.Evaluated ||
+                         state == State.Reset     ||
+                         state == State.NoChain; }
         }
 
         public void OnOverwrite()
@@ -58,9 +60,19 @@
         {
             state = State.NextOp;
         }
-        public void OnEvaluate()
+        public void OnEvaluateOperation()
         {
             state = State.Evaluated;
+        }
+        public void OnEvaluate()
+        {
+            if (state == State.NextOp)
+                state = State.NoChain;
+        }
+        public void OnOperation()
+        {
+            if (state == State.NoChain)
+                state = State.NextOp;
         }
     }
 }

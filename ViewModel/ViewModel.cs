@@ -72,6 +72,7 @@ namespace Calculator.ViewModel
             }
             if (state.CanStoreOperation)
                 state.CurrentOperation = op;
+            state.OnOperation();
         }
         private void OnEvaluate()
         {
@@ -80,8 +81,9 @@ namespace Calculator.ViewModel
             if (state.CanEvaluate)
             {
                 PerformCurrentOperation();
-                state.OnEvaluate();
+                state.OnEvaluateOperation();
             }
+            state.OnEvaluate();
         }
         private void PerformCurrentOperation()
         {
