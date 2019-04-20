@@ -59,7 +59,8 @@
             <Button Grid.Row="3" Grid.Column="0" Margin="{StaticResource btnMargin}"
                     Command="{Binding Path=NumCommands[0]}">0</Button>
 
-            <Button Grid.Row="3" Grid.Column="1" Margin="{StaticResource btnMargin}">.</Button>
+            <Button Grid.Row="3" Grid.Column="1" Margin="{StaticResource btnMargin}"
+                    Command="{Binding Path=DecCommand}">.</Button>
             <Button Grid.Row="3" Grid.Column="2" Margin="{StaticResource btnMargin}">+/-</Button>
 
             <Button Grid.Row="0" Grid.Column="3" Margin="{StaticResource btnMargin}">CE</Button>

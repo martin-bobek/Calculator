@@ -83,6 +83,31 @@ namespace Calculator.ViewModel.Tests
             EnterNumber(vm, "7");
             KeyPress(vm, "=", "21");
         }
+        [TestMethod]
+        public void DecimalNumberEntry()
+        {
+            var vm = CreateViewModel();
+
+            EnterNumber(vm, "120.302..12", "120.30212");
+            KeyPress(vm, "=", "120.30212");
+            EnterNumber(vm, ".102.2.3...312.", "0.10223312");
+            KeyPress(vm, "=", "0.10223312");
+            EnterNumber(vm, "1231.", "1231.");
+            KeyPress(vm, "=", "1231");
+            EnterNumber(vm, "321.", "321.");
+            EnterOp(vm, Operation.Add, "321.");
+            KeyPress(vm, "=", "321");
+        }
+        [TestMethod]
+        public void NoChainOnImport()
+        {
+            var vm = CreateViewModel();
+
+            EnterNumber(vm, "1");
+            KeyPress(vm, "=", "1");
+            KeyPress(vm, "=", "1");
+            KeyPress(vm, "=", "1");
+        }
 
         private ViewModel CreateViewModel()
         {
@@ -90,15 +115,24 @@ namespace Calculator.ViewModel.Tests
             Assert.AreEqual("", vm.Display);
             return vm;
         }
-        private void EnterNumber(ViewModel vm, string input)
+        private void EnterNumber(ViewModel vm, string input, string outcome = null)
         {
             foreach (char keypress in input)
             {
-                int num = keypress - '0';
-                Assert.IsTrue(vm.NumCommands[num].CanExecute(null));
-                vm.NumCommands[num].Execute(null);
+                if (keypress == '.')
+                {
+                    Assert.IsTrue(vm.DecCommand.CanExecute(null));
+                    vm.DecCommand.Execute(null);
+                }
+                else
+                {
+                    int num = keypress - '0';
+                    Assert.IsTrue(vm.NumCommands[num].CanExecute(null));
+                    vm.NumCommands[num].Execute(null);
+                }
             }
-            Assert.AreEqual(input, vm.Display);
+
+            Assert.AreEqual(outcome ?? input, vm.Display);
         }
         private void EnterOp(ViewModel vm, Operation op, string outcome = null)
         {

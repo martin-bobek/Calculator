@@ -20,6 +20,7 @@ namespace Calculator.ViewModel
             NumCommands = new ReadOnlyCollection<ICommand>(CreateNumCommands());
             OpCommands = new ReadOnlyDictionary<Operation, ICommand>(CreateOpCommands());
             EvalCommand = new RelayCommand(OnEvaluate);
+            DecCommand = new RelayCommand(OnDecimal);
         }
 
         public string Display
@@ -38,6 +39,7 @@ namespace Calculator.ViewModel
         public ReadOnlyCollection<ICommand> NumCommands { get; }
         public ReadOnlyDictionary<Operation, ICommand> OpCommands { get; }
         public ICommand EvalCommand { get; }
+        public ICommand DecCommand { get; }
 
         private void OnNumberCommand(int num)
         {
@@ -60,6 +62,8 @@ namespace Calculator.ViewModel
                 PerformCurrentOperation();
                 state.OnOperationPerformed();
             }
+            if (state.CanUpdateDisplay)
+                UpdateDisplay();
             if (state.CanStoreOperation)
                 state.CurrentOperation = op;
             state.OnOperation();
@@ -73,7 +77,21 @@ namespace Calculator.ViewModel
                 PerformCurrentOperation();
                 state.OnEvaluateOperation();
             }
+            UpdateDisplay();
             state.OnEvaluate();
+        }
+        private void OnDecimal()
+        {
+            if (state.CanClearAccumulator)
+                model.ClearAccumulator();
+            if (state.CanOverwrite)
+            {
+                Display = "0.";
+                state.OnOverwrite();
+            }
+            else if (state.CanAddDecimal)
+                Display += ".";
+            state.OnDecimal();
         }
         private void PerformCurrentOperation()
         {
@@ -92,6 +110,9 @@ namespace Calculator.ViewModel
                     model.Divide();
                     break;
             }
+        }
+        private void UpdateDisplay()
+        {
             Display = model.Accumulator.ToString();
         }
         private void ReadOperand()
