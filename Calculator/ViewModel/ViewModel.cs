@@ -9,7 +9,7 @@ namespace Calculator.ViewModel
     public class ViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        private string displayString;
+        private string displayString = "";
         private readonly ReadOnlyCollection<ICommand> numCommands;
         private readonly ReadOnlyDictionary<Operation, ICommand> opCommands;
         private readonly ICommand evalCommand;
