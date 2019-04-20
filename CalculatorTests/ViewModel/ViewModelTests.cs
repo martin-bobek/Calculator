@@ -78,6 +78,7 @@ namespace Calculator.ViewModel.Tests
             KeyPress(vm, "=", "3");
             EnterOp(vm, Operation.Sub, "3");
             KeyPress(vm, "=", "3");
+            KeyPress(vm, "=", "3");
 
             EnterOp(vm, Operation.Mult, "3");
             EnterNumber(vm, "7");
@@ -107,6 +108,49 @@ namespace Calculator.ViewModel.Tests
             KeyPress(vm, "=", "1");
             KeyPress(vm, "=", "1");
             KeyPress(vm, "=", "1");
+        }
+        [TestMethod]
+        public void ClearEntry()
+        {
+            var vm = CreateViewModel();
+
+            KeyPress(vm, "CE", "");
+            EnterNumber(vm, "1.5");
+            KeyPress(vm, "CE", "");
+            KeyPress(vm, "=", "");
+            EnterNumber(vm, "3.2");
+
+            EnterOp(vm, Operation.Div, "3.2");
+            KeyPress(vm, "CE", "");
+            EnterNumber(vm, ".40", "0.40");
+            EnterOp(vm, Operation.Mult, "8");
+            KeyPress(vm, "CE", "");
+            KeyPress(vm, "=", "");
+            KeyPress(vm, "=", "");
+
+            EnterOp(vm, Operation.Div, "");
+            KeyPress(vm, "CE", "");
+            EnterNumber(vm, ".40", "0.40");
+            KeyPress(vm, "=", "20");
+            KeyPress(vm, "CE", "");
+            KeyPress(vm, "=", "50");
+            KeyPress(vm, "=", "125");
+
+            EnterOp(vm, Operation.Add, "125");
+            KeyPress(vm, "=", "125");
+            KeyPress(vm, "CE", "");
+            KeyPress(vm, "=", "");
+            EnterOp(vm, Operation.Sub, "");
+            EnterNumber(vm, "190.");
+            KeyPress(vm, "=", "-65");
+
+            EnterNumber(vm, "4");
+            EnterOp(vm, Operation.Mult, "4");
+            KeyPress(vm, "CE", "");
+            EnterOp(vm, Operation.Div, "");
+            EnterNumber(vm, ".50", "0.50");
+            KeyPress(vm, "=", "8");
+            KeyPress(vm, "=", "16");
         }
 
         private ViewModel CreateViewModel()
@@ -148,6 +192,10 @@ namespace Calculator.ViewModel.Tests
                 case "=":
                     Assert.IsTrue(vm.EvalCommand.CanExecute(null));
                     vm.EvalCommand.Execute(null);
+                    break;
+                case "CE":
+                    Assert.IsTrue(vm.ClearEntryCommand.CanExecute(null));
+                    vm.ClearEntryCommand.Execute(null);
                     break;
                 default:
                     throw new ArgumentException("Operation not supported: " + key, "key");

@@ -7,6 +7,8 @@
         private enum State { Reset, Import, Editing, FirstOp, NextOp, Evaluated, NoChain };
         private State state = State.Reset;
         private bool decimalAdded = false;
+        private bool displayInvalid = false;
+        private bool isEvaluate = false;
         private Operation op;
 
         public Operation CurrentOperation
@@ -30,14 +32,11 @@
         }
         public bool CanPerformOperation
         {
-            get { return state == State.Editing ||
-                         state == State.Import; }
-        }
-        public bool CanEvaluate
-        {
-            get { return state == State.Editing ||
-                         state == State.Import  ||
-                         state == State.Evaluated; }
+            get { return (!displayInvalid         &&
+                         (state == State.Editing  ||
+                          state == State.Import)) ||
+                         (isEvaluate              &&
+                          state == State.Evaluated); }
         }
         public bool CanStoreOperation
         {
@@ -45,8 +44,9 @@
         }
         public bool CanStoreOperand
         {
-            get { return state == State.Editing ||
-                         state == State.Import; }
+            get { return !displayInvalid         &&
+                         (state == State.Editing ||
+                          state == State.Import); }
         }
         public bool CanClearAccumulator
         {
@@ -60,7 +60,9 @@
         }
         public bool CanUpdateDisplay
         {
-            get { return state != State.FirstOp; }
+            get { return !displayInvalid &&
+                         (isEvaluate     ||
+                          state != State.FirstOp); }
         }
 
         public void OnOverwrite()
@@ -73,35 +75,41 @@
             else
                 state = State.Editing;
             decimalAdded = false;
+            displayInvalid = false;
         }
         public void OnOperationPerformed()
         {
             if (state == State.Import)
-                state = State.FirstOp;
+                state = isEvaluate ? State.NoChain : State.FirstOp;
             else
-                state = State.NextOp;
-        }
-        public void OnEvaluateOperation()
-        {
-            if (state == State.Import)
-                state = State.NoChain;
-            else
-                state = State.Evaluated;
-
+                state = isEvaluate ? State.Evaluated : State.NextOp;
+            displayInvalid = false;
         }
         public void OnEvaluate()
         {
             if (state == State.NextOp)
                 state = State.NoChain;
+            isEvaluate = true;
         }
         public void OnOperation()
         {
             if (state == State.NoChain)
                 state = State.NextOp;
+            isEvaluate = false;
         }
         public void OnDecimal()
         {
             decimalAdded = true;
+            displayInvalid = false;
+        }
+        public void OnClearEntry()
+        {
+            displayInvalid = true;
+            decimalAdded = false;
+        }
+        public void OnNumber()
+        {
+            displayInvalid = false;
         }
     }
 }

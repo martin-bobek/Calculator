@@ -21,6 +21,7 @@ namespace Calculator.ViewModel
             OpCommands = new ReadOnlyDictionary<Operation, ICommand>(CreateOpCommands());
             EvalCommand = new RelayCommand(OnEvaluate);
             DecCommand = new RelayCommand(OnDecimal);
+            ClearEntryCommand = new RelayCommand(OnClearEntry);
         }
 
         public string Display
@@ -40,6 +41,7 @@ namespace Calculator.ViewModel
         public ReadOnlyDictionary<Operation, ICommand> OpCommands { get; }
         public ICommand EvalCommand { get; }
         public ICommand DecCommand { get; }
+        public ICommand ClearEntryCommand { get; }
 
         private void OnNumberCommand(int num)
         {
@@ -52,9 +54,11 @@ namespace Calculator.ViewModel
             }
             else
                 Display += num;
+            state.OnNumber();
         }
         private void OnOperationCommand(Operation op)
         {
+            state.OnOperation();
             if (state.CanStoreOperand)
                 ReadOperand();
             if (state.CanPerformOperation)
@@ -66,19 +70,19 @@ namespace Calculator.ViewModel
                 UpdateDisplay();
             if (state.CanStoreOperation)
                 state.CurrentOperation = op;
-            state.OnOperation();
         }
         private void OnEvaluate()
         {
+            state.OnEvaluate();
             if (state.CanStoreOperand)
                 ReadOperand();
-            if (state.CanEvaluate)
+            if (state.CanPerformOperation)
             {
                 PerformCurrentOperation();
-                state.OnEvaluateOperation();
+                state.OnOperationPerformed();
             }
-            UpdateDisplay();
-            state.OnEvaluate();
+            if (state.CanUpdateDisplay)
+                UpdateDisplay();
         }
         private void OnDecimal()
         {
@@ -92,6 +96,11 @@ namespace Calculator.ViewModel
             else if (state.CanAddDecimal)
                 Display += ".";
             state.OnDecimal();
+        }
+        private void OnClearEntry()
+        {
+            Display = "";
+            state.OnClearEntry();
         }
         private void PerformCurrentOperation()
         {
