@@ -9,18 +9,17 @@ namespace Calculator.ViewModel
     public class ViewModel : INotifyPropertyChanged
     {
         public event PropertyChangedEventHandler PropertyChanged;
-        private string displayString = "";
-        private readonly ReadOnlyCollection<ICommand> numCommands;
-        private readonly ReadOnlyDictionary<Operation, ICommand> opCommands;
-        private readonly ICommand evalCommand;
         private readonly Model.Model model;
         private readonly KeyState state;
+        private string displayString = "";
 
         public ViewModel()
         {
             model = new Model.Model();
             state = new KeyState();
-            CreateCommands(out numCommands, out opCommands, out evalCommand);
+            NumCommands = new ReadOnlyCollection<ICommand>(CreateNumCommands());
+            OpCommands = new ReadOnlyDictionary<Operation, ICommand>(CreateOpCommands());
+            EvalCommand = new RelayCommand(OnEvaluate);
         }
 
         public string Display
@@ -36,18 +35,9 @@ namespace Calculator.ViewModel
                 OnPropertyChanged("Display");
             }
         }
-        public ReadOnlyCollection<ICommand> NumCommands
-        {
-            get { return numCommands; }
-        }
-        public ReadOnlyDictionary<Operation, ICommand> OpCommands
-        {
-            get { return opCommands; }
-        }
-        public ICommand EvaluateCommand
-        {
-            get { return evalCommand; }
-        }
+        public ReadOnlyCollection<ICommand> NumCommands { get; }
+        public ReadOnlyDictionary<Operation, ICommand> OpCommands { get; }
+        public ICommand EvalCommand { get; }
 
         private void OnNumberCommand(int num)
         {
@@ -107,14 +97,6 @@ namespace Calculator.ViewModel
         private void ReadOperand()
         {
             model.Operand = double.Parse(Display);
-        }
-        private void CreateCommands(out ReadOnlyCollection<ICommand> numCommands,
-                                    out ReadOnlyDictionary<Operation, ICommand> opCommands,
-                                    out ICommand evalCommand)
-        {
-            numCommands = new ReadOnlyCollection<ICommand>(CreateNumCommands());
-            opCommands = new ReadOnlyDictionary<Operation, ICommand>(CreateOpCommands());
-            evalCommand = new RelayCommand(OnEvaluate);
         }
         private List<ICommand> CreateNumCommands()
         {

@@ -75,7 +75,7 @@
                     Command="{Binding Path=OpCommands[Sub]}">-</Button>
             <Button Grid.Row="3" Grid.Column="3" Grid.ColumnSpan="2"
                     Margin="{StaticResource btnMargin}"
-                    Command="{Binding Path=EvaluateCommand}">=</Button>
+                    Command="{Binding Path=EvalCommand}">=</Button>
         </Grid>
     </DockPanel>
 </Window>

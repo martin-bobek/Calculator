@@ -112,8 +112,8 @@ namespace Calculator.ViewModel.Tests
             switch (key)
             {
                 case "=":
-                    Assert.IsTrue(vm.EvaluateCommand.CanExecute(null));
-                    vm.EvaluateCommand.Execute(null);
+                    Assert.IsTrue(vm.EvalCommand.CanExecute(null));
+                    vm.EvalCommand.Execute(null);
                     break;
                 default:
                     throw new ArgumentException("Operation not supported: " + key, "key");
