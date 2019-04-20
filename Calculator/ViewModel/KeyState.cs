@@ -87,7 +87,7 @@
         }
         public void OnEvaluate()
         {
-            if (state == State.NextOp)
+            if (state == State.NextOp || state == State.FirstOp)
                 state = State.NoChain;
             isEvaluate = true;
         }

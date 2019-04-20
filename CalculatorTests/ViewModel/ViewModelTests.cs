@@ -152,6 +152,25 @@ namespace Calculator.ViewModel.Tests
             KeyPress(vm, "=", "8");
             KeyPress(vm, "=", "16");
         }
+        [TestMethod]
+        public void ChainingBreakImport()
+        {
+            var vm = CreateViewModel();
+
+            EnterNumber(vm, "12.");
+            EnterOp(vm, Operation.Div, "12.");
+            KeyPress(vm, "=", "12");
+            EnterNumber(vm, ".125", "0.125");
+            KeyPress(vm, "=", "0.125");
+            KeyPress(vm, "=", "0.125");
+            EnterOp(vm, Operation.Mult, "0.125");
+            KeyPress(vm, "=", "0.125");
+            EnterNumber(vm, "3");
+            EnterOp(vm, Operation.Sub, "3");
+            EnterOp(vm, Operation.Sub, "3");
+            KeyPress(vm, "=", "3");
+            KeyPress(vm, "=", "3");
+        }
 
         private ViewModel CreateViewModel()
         {
