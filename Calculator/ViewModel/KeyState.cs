@@ -5,8 +5,9 @@
     class KeyState
     {
         private enum State { Reset, Import, Editing, FirstOp, NextOp, Evaluated, NoChain };
+        private enum DecState { None, Adding, Added };
         private State state = State.Reset;
-        private bool decimalAdded = false;
+        private DecState decimalAdded = DecState.None;
         private bool displayInvalid = false;
         private bool isEvaluate = false;
         private Operation op;
@@ -22,67 +23,88 @@
             }
         }
 
-        public bool CanOverwrite
+        public bool AddDecimal
         {
-            get { return state == State.Reset     ||
-                         state == State.NextOp    ||
-                         state == State.FirstOp   ||
-                         state == State.Evaluated ||
-                         state == State.NoChain; }
+            get
+            {
+                if (decimalAdded == DecState.Adding)
+                {
+                    decimalAdded = DecState.Added;
+                    return true;
+                }
+                return false;
+            }
         }
-        public bool CanPerformOperation
+        public bool ClearAccumulator
         {
-            get { return (!displayInvalid         &&
-                         (state == State.Editing  ||
-                          state == State.Import)) ||
-                         (isEvaluate              &&
-                          state == State.Evaluated); }
+            get
+            {
+                return state == State.Evaluated ||
+                       state == State.Reset ||
+                       state == State.NoChain;
+            }
         }
-        public bool CanStoreOperation
+        public bool OverwriteDisplay
+        {
+            get
+            {
+                if (state == State.Reset     ||
+                    state == State.NextOp    ||
+                    state == State.FirstOp   ||
+                    state == State.Evaluated ||
+                    state == State.NoChain)
+                {
+                    OnOverwrite();
+                    return true;
+                }
+                return false;
+            }
+        }
+        public bool PerformOperation
+        {
+            get
+            {
+                if ((!displayInvalid          &&
+                     (state == State.Editing  ||
+                      state == State.Import)) ||
+                     (isEvaluate              &&
+                      state == State.Evaluated))
+                {
+                    OnOperationPerformed();
+                    return true;
+                }
+                return false;
+            }
+        }
+        public bool StoreOperand
+        {
+            get
+            {
+                return !displayInvalid &&
+                       (state == State.Editing ||
+                        state == State.Import);
+            }
+        }
+        public bool StoreOperation
         {
             get { return state != State.Reset; }
         }
-        public bool CanStoreOperand
-        {
-            get { return !displayInvalid         &&
-                         (state == State.Editing ||
-                          state == State.Import); }
-        }
-        public bool CanClearAccumulator
-        {
-            get { return state == State.Evaluated ||
-                         state == State.Reset     ||
-                         state == State.NoChain; }
-        }
-        public bool CanAddDecimal
-        {
-            get { return !decimalAdded; }
-        }
-        public bool CanUpdateDisplay
+        public bool UpdateDisplay
         {
             get { return !displayInvalid &&
                          (isEvaluate     ||
                           state != State.FirstOp); }
         }
 
-        public void OnOverwrite()
+        public void OnClearEntry()
         {
-            if (state != State.NextOp && state != State.FirstOp)
-            {
-                CurrentOperation = Operation.Add;
-                state = State.Import;
-            }
-            else
-                state = State.Editing;
-            decimalAdded = false;
-            displayInvalid = false;
+            displayInvalid = true;
+            decimalAdded = DecState.None;
         }
-        public void OnOperationPerformed()
+        public void OnDecimal()
         {
-            if (state == State.Import)
-                state = isEvaluate ? State.NoChain : State.FirstOp;
-            else
-                state = isEvaluate ? State.Evaluated : State.NextOp;
+            if (decimalAdded == DecState.None)
+                decimalAdded = DecState.Adding;
             displayInvalid = false;
         }
         public void OnEvaluate()
@@ -91,24 +113,37 @@
                 state = State.NoChain;
             isEvaluate = true;
         }
+        public void OnNumber()
+        {
+            displayInvalid = false;
+        }
         public void OnOperation()
         {
             if (state == State.NoChain)
                 state = State.NextOp;
             isEvaluate = false;
         }
-        public void OnDecimal()
+        private void OnOperationPerformed()
         {
-            decimalAdded = true;
+            if (state == State.Import)
+                state = isEvaluate ? State.NoChain : State.FirstOp;
+            else
+                state = isEvaluate ? State.Evaluated : State.NextOp;
             displayInvalid = false;
         }
-        public void OnClearEntry()
+        private void OnOverwrite()
         {
-            displayInvalid = true;
-            decimalAdded = false;
-        }
-        public void OnNumber()
-        {
+            if (state != State.NextOp && state != State.FirstOp)
+            {
+                CurrentOperation = Operation.Add;
+                state = State.Import;
+            }
+            else
+                state = State.Editing;
+            if (decimalAdded != DecState.Adding)
+                decimalAdded = DecState.Added;
+            else
+                decimalAdded = DecState.None;
             displayInvalid = false;
         }
     }
