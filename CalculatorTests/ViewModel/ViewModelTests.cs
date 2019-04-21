@@ -115,14 +115,14 @@ namespace Calculator.ViewModel.Tests
             var vm = CreateViewModel();
 
             KeyPress(vm, "CE", "");
-            EnterNumber(vm, "1.5");
+            EnterNumber(vm, "1.5.", "1.5");
             KeyPress(vm, "CE", "");
             KeyPress(vm, "=", "");
-            EnterNumber(vm, "3.2");
+            EnterNumber(vm, "3.2..", "3.2");
 
             EnterOp(vm, Operation.Div, "3.2");
             KeyPress(vm, "CE", "");
-            EnterNumber(vm, ".40", "0.40");
+            EnterNumber(vm, ".4.0.", "0.40");
             EnterOp(vm, Operation.Mult, "8");
             KeyPress(vm, "CE", "");
             KeyPress(vm, "=", "");
@@ -130,7 +130,7 @@ namespace Calculator.ViewModel.Tests
 
             EnterOp(vm, Operation.Div, "");
             KeyPress(vm, "CE", "");
-            EnterNumber(vm, ".40", "0.40");
+            EnterNumber(vm, "...40", "0.40");
             KeyPress(vm, "=", "20");
             KeyPress(vm, "CE", "");
             KeyPress(vm, "=", "50");
@@ -148,7 +148,7 @@ namespace Calculator.ViewModel.Tests
             EnterOp(vm, Operation.Mult, "4");
             KeyPress(vm, "CE", "");
             EnterOp(vm, Operation.Div, "");
-            EnterNumber(vm, ".50", "0.50");
+            EnterNumber(vm, ".5.0", "0.50");
             KeyPress(vm, "=", "8");
             KeyPress(vm, "=", "16");
         }
@@ -179,6 +179,17 @@ namespace Calculator.ViewModel.Tests
             KeyPress(vm, "=", "");
             KeyPress(vm, "=", "");
             KeyPress(vm, "=", "");
+            KeyPress(vm, "C", "");
+
+            EnterOp(vm, Operation.Add, "");
+            EnterOp(vm, Operation.Add, "");
+            EnterOp(vm, Operation.Add, "");
+            KeyPress(vm, "C", "");
+
+            EnterOp(vm, Operation.Div, "");
+            EnterOp(vm, Operation.Div, "");
+            EnterOp(vm, Operation.Div, "");
+            KeyPress(vm, "C", "");
         }
         [TestMethod]
         public void NumClearEntryOpDecimal()
@@ -218,6 +229,11 @@ namespace Calculator.ViewModel.Tests
             EnterOp(vm, Operation.Div, "");
             EnterNumber(vm, ".50", "0.50");
             KeyPress(vm, "C", "");
+
+            EnterOp(vm, Operation.Sub, "");
+            EnterNumber(vm, "3.50");
+            KeyPress(vm, "=", "3.5");
+            KeyPress(vm, "=", "3.5");
         }
 
         private ViewModel CreateViewModel()
