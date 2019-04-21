@@ -5,8 +5,10 @@
     class KeyState
     {
         private enum State { Reset, Import, Editing, FirstOp, NextOp, Evaluated, NoChain };
+        private enum NegState { Pos, Neg, Clearing, Negating };
         private State state = State.Reset;
         private bool decimalAdded = false;
+        private NegState negative = NegState.Pos;
         private bool displayInvalid = false;
         private bool isEvaluate;
         private Operation op;
@@ -26,6 +28,10 @@
         {
             get { return !decimalAdded; }
         }
+        public bool AddZeroDecimal
+        {
+            get { return displayInvalid; }
+        }
         public bool ClearAccumulator
         {
             get { return state == State.Evaluated ||
@@ -36,8 +42,7 @@
         {
             get
             {
-                if (displayInvalid           ||
-                    state == State.Reset     ||
+                if (state == State.Reset     ||
                     state == State.NextOp    ||
                     state == State.FirstOp   ||
                     state == State.Evaluated ||
@@ -65,6 +70,19 @@
                 return false;
             }
         }
+        public bool RemoveNegative
+        {
+            get
+            {
+                if (negative == NegState.Negating)
+                {
+                    negative = NegState.Neg;
+                    return false;
+                }
+                negative = NegState.Pos;
+                return true;
+            }
+        }
         public bool StoreOperand
         {
             get
@@ -76,8 +94,9 @@
         }
         public bool StoreOperation
         {
-            get { return (!displayInvalid         ||
-                           state != State.Import) &&
+            get { return (!displayInvalid           ||
+                          (negative == NegState.Pos &&
+                           state != State.Import))  &&
                            state != State.Reset; }
         }
         public bool UpdateDisplay
@@ -93,11 +112,13 @@
             state = State.Reset;
             decimalAdded = false;
             displayInvalid = false;
+            negative = NegState.Pos;
         }
         public void OnClearEntry()
         {
             displayInvalid = true;
             decimalAdded = false;
+            negative = NegState.Pos;
         }
         public void OnDecimalPost()
         {
@@ -109,6 +130,13 @@
             if (state == State.NextOp || state == State.FirstOp)
                 state = State.NoChain;
             isEvaluate = true;
+        }
+        public void OnNegative()
+        {
+            if (negative == NegState.Neg)
+                negative = NegState.Clearing;
+            else
+                negative = NegState.Negating;
         }
         public void OnNumber()
         {
@@ -130,6 +158,17 @@
         }
         private void OnOverwrite()
         {
+            if (negative == NegState.Negating || negative == NegState.Clearing)
+            {
+                displayInvalid = true;
+                negative = NegState.Neg;
+            }
+            else
+            {
+                displayInvalid = false;
+                negative = NegState.Pos;
+            }
+
             if (state != State.NextOp && state != State.FirstOp)
             {
                 CurrentOperation = Operation.Add;
@@ -137,8 +176,8 @@
             }
             else
                 state = State.Editing;
+
             decimalAdded = false;
-            displayInvalid = false;
         }
     }
 }

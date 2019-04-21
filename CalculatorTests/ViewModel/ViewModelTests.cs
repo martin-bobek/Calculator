@@ -275,6 +275,126 @@ namespace Calculator.ViewModel.Tests
             KeyPress(vm, "=", "1.74");
             KeyPress(vm, "=", "3.48");
         }
+        [TestMethod]
+        public void NegateBasic()
+        {
+            var vm = CreateViewModel();
+
+            KeyPress(vm, "-", "-");
+            KeyPress(vm, "-", "");
+            KeyPress(vm, "-", "-");
+            KeyPress(vm, "=", "-");
+
+            EnterOp(vm, Operation.Div, "-");
+            EnterNumber(vm, "3.2.41.", "-3.241");
+            KeyPress(vm, "=", "-3.241");
+
+            KeyPress(vm, "-", "-");
+            KeyPress(vm, "-", "");
+            KeyPress(vm, "=", "");
+            KeyPress(vm, "=", "");
+
+            EnterOp(vm, Operation.Mult, "");
+            EnterNumber(vm, ".12.4", "0.124");
+            EnterOp(vm, Operation.Div, "0.124");
+            EnterNumber(vm, ".50.", "0.50");
+            KeyPress(vm, "-", "-0.50");
+            KeyPress(vm, "=", "-0.248");
+            KeyPress(vm, "=", "0.496");
+            KeyPress(vm, "=", "-0.992");
+            EnterOp(vm, Operation.Add, "-0.992");
+            KeyPress(vm, "=", "-0.992");
+
+            KeyPress(vm, "-", "-");
+            EnterNumber(vm, ".12.", "-0.12");
+            EnterOp(vm, Operation.Mult, "-0.12");
+            EnterNumber(vm, "1.0000...", "1.0000");
+            KeyPress(vm, "-", "-1.0000");
+            KeyPress(vm, "-", "1.0000");
+            KeyPress(vm, "-", "-1.0000");
+            KeyPress(vm, "=", "0.12");
+            KeyPress(vm, "=", "-0.12");
+
+            EnterOp(vm, Operation.Div, "-0.12");
+            KeyPress(vm, "-", "-");
+            EnterNumber(vm, "2.", "-2.");
+            KeyPress(vm, "-", "2.");
+            KeyPress(vm, "=", "-0.06");
+            KeyPress(vm, "=", "-0.03");
+        }
+        [TestMethod]
+        public void NegateOnClear()
+        {
+            var vm = CreateViewModel();
+
+            KeyPress(vm, "-", "-");
+            KeyPress(vm, "=", "-");
+            KeyPress(vm, "CE", "");
+            KeyPress(vm, "=", "");
+            KeyPress(vm, "=", "");
+
+            EnterNumber(vm, ".34.", "0.34");
+            EnterOp(vm, Operation.Add, "0.34");
+            EnterNumber(vm, "2.3");
+            EnterOp(vm, Operation.Sub, "2.64");
+
+            KeyPress(vm, "-", "-");
+            KeyPress(vm, "C", "");
+            EnterNumber(vm, ".34.", "0.34");
+            KeyPress(vm, "C", "");
+            KeyPress(vm, "-", "-");
+            EnterNumber(vm, ".34.", "-0.34");
+
+            EnterOp(vm, Operation.Mult, "-0.34");
+            EnterNumber(vm, "0.5");
+            EnterOp(vm, Operation.Sub, "-0.17");
+            KeyPress(vm, "-", "-");
+
+            KeyPress(vm, "C", "");
+            KeyPress(vm, "=", "");
+            KeyPress(vm, "=", "");
+        }
+        [TestMethod]
+        public void NegatePreEvaluate()
+        {
+            var vm = CreateViewModel();
+
+            KeyPress(vm, "-", "-");
+            EnterNumber(vm, "0.2.3", "-0.23");
+            EnterOp(vm, Operation.Mult, "-0.23");
+
+            EnterNumber(vm, "0.32.", "0.32");
+            KeyPress(vm, "-", "-0.32");
+            KeyPress(vm, "CE", "");
+            KeyPress(vm, "-", "-");
+            EnterOp(vm, Operation.Div, "-");
+
+            EnterNumber(vm, ".50", "-0.50");
+            KeyPress(vm, "-", "0.50");
+            EnterOp(vm, Operation.Mult, "-0.115");
+
+            KeyPress(vm, "-", "-");
+            KeyPress(vm, "-", "");
+            EnterOp(vm, Operation.Sub, "");
+
+            KeyPress(vm, "-", "-");
+            KeyPress(vm, "-", "");
+            EnterNumber(vm, ".32.", "0.32");
+            EnterOp(vm, Operation.Div, "-0.435");
+
+            KeyPress(vm, "-", "-");
+            KeyPress(vm, "=", "-");
+            KeyPress(vm, "=", "-");
+            KeyPress(vm, "-", "");
+
+            EnterOp(vm, Operation.Sub, "");
+            KeyPress(vm, "-", "-");
+            EnterNumber(vm, ".123", "-0.123");
+            KeyPress(vm, "=", "-0.312");
+            KeyPress(vm, "=", "-0.189");
+            KeyPress(vm, "=", "-0.066");
+            KeyPress(vm, "=", "0.057");
+        }
 
         private ViewModel CreateViewModel()
         {
@@ -315,6 +435,10 @@ namespace Calculator.ViewModel.Tests
                 case "=":
                     Assert.IsTrue(vm.EvalCommand.CanExecute(null));
                     vm.EvalCommand.Execute(null);
+                    break;
+                case "-":
+                    Assert.IsTrue(vm.NegateCommand.CanExecute(null));
+                    vm.NegateCommand.Execute(null);
                     break;
                 case "C":
                     Assert.IsTrue(vm.ClearCommand.CanExecute(null));

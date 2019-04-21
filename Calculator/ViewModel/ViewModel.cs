@@ -23,6 +23,7 @@ namespace Calculator.ViewModel
             DecCommand = new RelayCommand(OnDecimal);
             ClearCommand = new RelayCommand(OnClear);
             ClearEntryCommand = new RelayCommand(OnClearEntry);
+            NegateCommand = new RelayCommand(OnNegate);
         }
 
         public string Display
@@ -44,6 +45,7 @@ namespace Calculator.ViewModel
         public ICommand DecCommand { get; }
         public ICommand ClearCommand { get; }
         public ICommand ClearEntryCommand { get; }
+        public ICommand NegateCommand { get; }
 
         private void OnNumberCommand(int num)
         {
@@ -83,6 +85,8 @@ namespace Calculator.ViewModel
                 model.ClearAccumulator();
             if (state.OverwriteDisplay)
                 Display = "0.";
+            else if (state.AddZeroDecimal)
+                Display += "0.";
             else if (state.AddDecimal)
                 Display += ".";
             state.OnDecimalPost();
@@ -96,6 +100,18 @@ namespace Calculator.ViewModel
         {
             state.OnClearEntry();
             Display = "";
+        }
+        private void OnNegate()
+        {
+            state.OnNegative();
+            if (state.ClearAccumulator)
+                model.ClearAccumulator();
+            if (state.OverwriteDisplay)
+                Display = "-";
+            else if (state.RemoveNegative)
+                Display = Display.Substring(1);
+            else
+                Display = '-' + Display;
         }
         private void PerformCurrentOperation()
         {
