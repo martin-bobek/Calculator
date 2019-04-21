@@ -180,6 +180,20 @@ namespace Calculator.ViewModel.Tests
             KeyPress(vm, "=", "");
             KeyPress(vm, "=", "");
         }
+        [TestMethod]
+        public void NumClearEntryOpDecimal()
+        {
+            var vm = CreateViewModel();
+
+            EnterNumber(vm, "1");
+            KeyPress(vm, "CE", "");
+            EnterOp(vm, Operation.Mult, "");
+
+            EnterNumber(vm, ".24.2.43..", "0.24243");
+            EnterOp(vm, Operation.Sub, "0.24243");
+            EnterNumber(vm, "1.23.", "1.23");
+            KeyPress(vm, "=", "-0.98757");
+        }
 
         private ViewModel CreateViewModel()
         {

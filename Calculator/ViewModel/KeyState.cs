@@ -36,7 +36,8 @@
         {
             get
             {
-                if (state == State.Reset     ||
+                if (displayInvalid           ||
+                    state == State.Reset     ||
                     state == State.NextOp    ||
                     state == State.FirstOp   ||
                     state == State.Evaluated ||
