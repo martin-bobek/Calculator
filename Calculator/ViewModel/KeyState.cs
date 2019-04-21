@@ -8,7 +8,7 @@
         private State state = State.Reset;
         private bool decimalAdded = false;
         private bool displayInvalid = false;
-        private bool isEvaluate = false;
+        private bool isEvaluate;
         private Operation op;
 
         public Operation CurrentOperation
@@ -86,6 +86,12 @@
                           state != State.FirstOp); }
         }
 
+        public void OnClear()
+        {
+            state = State.Reset;
+            decimalAdded = false;
+            displayInvalid = false;
+        }
         public void OnClearEntry()
         {
             displayInvalid = true;

@@ -194,6 +194,31 @@ namespace Calculator.ViewModel.Tests
             EnterNumber(vm, "1.23.", "1.23");
             KeyPress(vm, "=", "-0.98757");
         }
+        [TestMethod]
+        public void Clear()
+        {
+            var vm = CreateViewModel();
+
+            EnterNumber(vm, "0.125");
+            KeyPress(vm, "C", "");
+            KeyPress(vm, "=", "");
+            KeyPress(vm, "=", "");
+
+            EnterNumber(vm, "0.43..5", "0.435");
+            KeyPress(vm, "CE", "");
+            EnterOp(vm, Operation.Mult, "");
+            EnterNumber(vm, ".87.", "0.87");
+            EnterOp(vm, Operation.Sub, "0.87");
+            KeyPress(vm, "C", "");
+
+            EnterNumber(vm, "2.3..", "2.3");
+            KeyPress(vm, "=", "2.3");
+            KeyPress(vm, "CE", "");
+            KeyPress(vm, "=", "");
+            EnterOp(vm, Operation.Div, "");
+            EnterNumber(vm, ".50", "0.50");
+            KeyPress(vm, "C", "");
+        }
 
         private ViewModel CreateViewModel()
         {
@@ -234,6 +259,10 @@ namespace Calculator.ViewModel.Tests
                 case "=":
                     Assert.IsTrue(vm.EvalCommand.CanExecute(null));
                     vm.EvalCommand.Execute(null);
+                    break;
+                case "C":
+                    Assert.IsTrue(vm.ClearCommand.CanExecute(null));
+                    vm.ClearCommand.Execute(null);
                     break;
                 case "CE":
                     Assert.IsTrue(vm.ClearEntryCommand.CanExecute(null));

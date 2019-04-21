@@ -21,6 +21,7 @@ namespace Calculator.ViewModel
             OpCommands = new ReadOnlyDictionary<Operation, ICommand>(CreateOpCommands());
             EvalCommand = new RelayCommand(OnEvaluate);
             DecCommand = new RelayCommand(OnDecimal);
+            ClearCommand = new RelayCommand(OnClear);
             ClearEntryCommand = new RelayCommand(OnClearEntry);
         }
 
@@ -41,6 +42,7 @@ namespace Calculator.ViewModel
         public ReadOnlyDictionary<Operation, ICommand> OpCommands { get; }
         public ICommand EvalCommand { get; }
         public ICommand DecCommand { get; }
+        public ICommand ClearCommand { get; }
         public ICommand ClearEntryCommand { get; }
 
         private void OnNumberCommand(int num)
@@ -84,6 +86,11 @@ namespace Calculator.ViewModel
             else if (state.AddDecimal)
                 Display += ".";
             state.OnDecimalPost();
+        }
+        private void OnClear()
+        {
+            state.OnClear();
+            Display = "";
         }
         private void OnClearEntry()
         {
