@@ -45,62 +45,50 @@ namespace Calculator.ViewModel
 
         private void OnNumberCommand(int num)
         {
-            if (state.CanClearAccumulator)
+            state.OnNumber();
+            if (state.ClearAccumulator)
                 model.ClearAccumulator();
-            if (state.CanOverwrite)
-            {
+            if (state.OverwriteDisplay)
                 Display = num.ToString();
-                state.OnOverwrite();
-            }
             else
                 Display += num;
-            state.OnNumber();
         }
         private void OnOperationCommand(Operation op)
         {
             state.OnOperation();
-            if (state.CanStoreOperand)
+            if (state.StoreOperand)
                 ReadOperand();
-            if (state.CanPerformOperation)
-            {
+            if (state.PerformOperation)
                 PerformCurrentOperation();
-                state.OnOperationPerformed();
-            }
-            if (state.CanUpdateDisplay)
+            if (state.UpdateDisplay)
                 UpdateDisplay();
-            if (state.CanStoreOperation)
+            if (state.StoreOperation)
                 state.CurrentOperation = op;
         }
         private void OnEvaluate()
         {
             state.OnEvaluate();
-            if (state.CanStoreOperand)
+            if (state.StoreOperand)
                 ReadOperand();
-            if (state.CanPerformOperation)
-            {
+            if (state.PerformOperation)
                 PerformCurrentOperation();
-                state.OnOperationPerformed();
-            }
-            if (state.CanUpdateDisplay)
+            if (state.UpdateDisplay)
                 UpdateDisplay();
         }
         private void OnDecimal()
         {
-            if (state.CanClearAccumulator)
+            if (state.ClearAccumulator)
                 model.ClearAccumulator();
-            if (state.CanOverwrite)
-            {
+            if (state.OverwriteDisplay)
                 Display = "0.";
-                state.OnOverwrite();
-            }
-            else if (state.CanAddDecimal)
+            else if (state.AddDecimal)
                 Display += ".";
-            state.OnDecimal();
+            state.OnDecimalPost();
         }
         private void OnClearEntry()
         {
-            Display = "";
             state.OnClearEntry();
+            Display = "";
         }
         private void PerformCurrentOperation()
         {
