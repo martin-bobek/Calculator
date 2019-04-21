@@ -79,7 +79,8 @@
         }
         public bool UpdateDisplay
         {
-            get { return !displayInvalid &&
+            get { return !displayInvalid       &&
+                          state != State.Reset &&
                          (isEvaluate     ||
                           state != State.FirstOp); }
         }

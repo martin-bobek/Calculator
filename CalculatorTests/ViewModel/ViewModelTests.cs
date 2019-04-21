@@ -171,6 +171,15 @@ namespace Calculator.ViewModel.Tests
             KeyPress(vm, "=", "3");
             KeyPress(vm, "=", "3");
         }
+        [TestMethod]
+        public void EvaluateOnReset()
+        {
+            var vm = CreateViewModel();
+
+            KeyPress(vm, "=", "");
+            KeyPress(vm, "=", "");
+            KeyPress(vm, "=", "");
+        }
 
         private ViewModel CreateViewModel()
         {
