@@ -77,13 +77,13 @@ namespace Calculator.ViewModel
         }
         private void OnDecimal()
         {
-            state.OnDecimal();          // TODO - Refactor to put at the head of handler.
             if (state.ClearAccumulator)
                 model.ClearAccumulator();
             if (state.OverwriteDisplay)
                 Display = "0.";
             else if (state.AddDecimal)
                 Display += ".";
+            state.OnDecimal();          // TODO - Refactor to put at the head of handler.
         }
         private void OnClearEntry()
         {

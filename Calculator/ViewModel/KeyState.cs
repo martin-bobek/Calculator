@@ -5,9 +5,10 @@
     class KeyState
     {
         private enum State { Reset, Import, Editing, FirstOp, NextOp, Evaluated, NoChain };
-        private enum DecState { None, Adding, Added };
+        //        private enum DecState { None, Adding, Added };
         private State state = State.Reset;
-        private DecState decimalAdded = DecState.None;
+        //        private DecState decimalAdded = DecState.None;
+        private bool decimalAdded = false;
         private bool displayInvalid = false;
         private bool isEvaluate = false;
         private Operation op;
@@ -27,12 +28,15 @@
         {
             get
             {
+                return !decimalAdded;
+                /*
                 if (decimalAdded == DecState.Adding)
                 {
                     decimalAdded = DecState.Added;
                     return true;
                 }
                 return false;
+                */
             }
         }
         public bool ClearAccumulator
@@ -99,12 +103,16 @@
         public void OnClearEntry()
         {
             displayInvalid = true;
-            decimalAdded = DecState.None;
+            //decimalAdded = DecState.None;
+            decimalAdded = false;
         }
         public void OnDecimal()
         {
+            /*
             if (decimalAdded == DecState.None)
                 decimalAdded = DecState.Adding;
+            */
+            decimalAdded = true;
             displayInvalid = false;
         }
         public void OnEvaluate()
@@ -140,10 +148,13 @@
             }
             else
                 state = State.Editing;
+            /*
             if (decimalAdded != DecState.Adding)
                 decimalAdded = DecState.Added;
             else
                 decimalAdded = DecState.None;
+            */
+            decimalAdded = false;
             displayInvalid = false;
         }
     }
