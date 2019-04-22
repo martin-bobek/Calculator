@@ -76,7 +76,9 @@
         }
         public bool StoreOperation
         {
-            get { return state != State.Reset; }
+            get { return (!displayInvalid         ||
+                           state != State.Import) &&
+                           state != State.Reset; }
         }
         public bool UpdateDisplay
         {

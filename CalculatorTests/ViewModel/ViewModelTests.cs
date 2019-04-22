@@ -235,6 +235,46 @@ namespace Calculator.ViewModel.Tests
             KeyPress(vm, "=", "3.5");
             KeyPress(vm, "=", "3.5");
         }
+        [TestMethod]
+        public void OpInvalidInput()
+        {
+            var vm = CreateViewModel();
+
+            EnterNumber(vm, "1");
+            KeyPress(vm, "CE", "");
+            EnterOp(vm, Operation.Mult, "");
+            EnterNumber(vm, "92");
+            KeyPress(vm, "=", "92");
+
+            EnterOp(vm, Operation.Div, "92");
+            EnterNumber(vm, "4");
+            KeyPress(vm, "=", "23");
+            KeyPress(vm, "=", "5.75");
+            KeyPress(vm, "C", "");
+
+            EnterNumber(vm, "32");
+            KeyPress(vm, "CE", "");
+            EnterOp(vm, Operation.Sub, "");
+            EnterNumber(vm, ".87", "0.87");
+            KeyPress(vm, "=", "0.87");
+
+            EnterOp(vm, Operation.Mult, "0.87");
+            EnterNumber(vm, "2");
+            KeyPress(vm, "=", "1.74");
+            KeyPress(vm, "=", "3.48");
+            KeyPress(vm, "C", "");
+
+            EnterNumber(vm, ".32", "0.32");
+            KeyPress(vm, "CE", "");
+            EnterOp(vm, Operation.Sub, "");
+            EnterNumber(vm, ".87", "0.87");
+            KeyPress(vm, "=", "0.87");
+
+            EnterOp(vm, Operation.Mult, "0.87");
+            EnterNumber(vm, "2");
+            KeyPress(vm, "=", "1.74");
+            KeyPress(vm, "=", "3.48");
+        }
 
         private ViewModel CreateViewModel()
         {
