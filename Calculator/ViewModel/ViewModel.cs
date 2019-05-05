@@ -49,12 +49,12 @@ namespace Calculator.ViewModel
 
         private void OnNumberCommand(int num)
         {
-            state.OnNumber();
+            state.OnNumber(num);
             if (state.ClearAccumulator)
                 model.ClearAccumulator();
             if (state.OverwriteDisplay)
                 Display = num.ToString();
-            else
+            else if (state.AppendNumber)
                 Display += num;
         }
         private void OnOperationCommand(Operation op)

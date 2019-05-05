@@ -6,11 +6,13 @@
     {
         private enum State { Reset, Import, Editing, FirstOp, NextOp, Evaluated, NoChain };
         private enum NegState { Pos, Neg, Clearing, Negating };
+        private enum ZeroState { None, Adding, BlockZero, Blocking, AcceptAll };
         private State state = State.Reset;
         private bool decimalAdded = false;
         private NegState negative = NegState.Pos;
         private bool displayInvalid = false;
         private bool isEvaluate;
+        private ZeroState blockZero = ZeroState.None;
         private Operation op;
 
         public Operation CurrentOperation
@@ -106,6 +108,20 @@
                          (isEvaluate     ||
                           state != State.FirstOp); }
         }
+        public bool AppendNumber
+        {
+            get
+            {
+                if (blockZero == ZeroState.Blocking)
+                {
+                    blockZero = ZeroState.BlockZero;
+                    return false;
+                }
+                if (blockZero == ZeroState.Adding)
+                    blockZero = ZeroState.BlockZero;
+                return true;
+            }
+        }
 
         public void OnClear()
         {
@@ -113,17 +129,20 @@
             decimalAdded = false;
             displayInvalid = false;
             negative = NegState.Pos;
+            blockZero = ZeroState.None;
         }
         public void OnClearEntry()
         {
             displayInvalid = true;
             decimalAdded = false;
             negative = NegState.Pos;
+            blockZero = ZeroState.None;
         }
         public void OnDecimalPost()
         {
             decimalAdded = true;
             displayInvalid = false;
+            blockZero = ZeroState.AcceptAll;
         }
         public void OnEvaluate()
         {
@@ -138,9 +157,18 @@
             else
                 negative = NegState.Negating;
         }
-        public void OnNumber()
+        public void OnNumber(int number)
         {
             displayInvalid = false;
+            if (number == 0)
+            {
+                if (blockZero == ZeroState.None)
+                    blockZero = ZeroState.Adding;
+                else if (blockZero == ZeroState.BlockZero)
+                    blockZero = ZeroState.Blocking;
+            }
+            else
+                blockZero = ZeroState.AcceptAll;
         }
         public void OnOperation()
         {
@@ -158,6 +186,11 @@
         }
         private void OnOverwrite()
         {
+            if (blockZero == ZeroState.Adding)
+                blockZero = ZeroState.BlockZero;
+            else if (negative == NegState.Negating)
+                blockZero = ZeroState.None;
+
             if (negative == NegState.Negating || negative == NegState.Clearing)
             {
                 displayInvalid = true;
