@@ -409,14 +409,17 @@ namespace Calculator.ViewModel.Tests
             KeyPress(vm, "-", "-");
             KeyPress(vm, "-", "");
             EnterNumber(vm, ".101..11000.002", "0.10111000002");
-            EnterOp(vm, Operation.Mult, "0.10111000002");
+            EnterOp(vm, Operation.Sub, "0.10111000002");
+            EnterNumber(vm, "0000.00111000002", "0.00111000002");
+            EnterOp(vm, Operation.Mult, "0.1");
             EnterNumber(vm, "100000.000", "100000.000");
             KeyPress(vm, "-", "-100000.000");
-            EnterOp(vm, Operation.Sub, "-10111.000002");
+            EnterOp(vm, Operation.Sub, "-10000");
             KeyPress(vm, "C", "");
             KeyPress(vm, "-", "-");
             EnterNumber(vm, "000000", "-0");
             KeyPress(vm, "=", "0");
+            EnterNumber(vm, "000.001002", "0.001002");
         }
         [TestMethod]
         public void LeadingZero()
@@ -432,14 +435,19 @@ namespace Calculator.ViewModel.Tests
             KeyPress(vm, "-", "-");
             KeyPress(vm, "-", "");
             EnterNumber(vm, ".101..11000.002", "0.10111000002");
-            EnterOp(vm, Operation.Mult, "0.10111000002");
+            EnterOp(vm, Operation.Sub, "0.10111000002");
+            EnterNumber(vm, "0002.00111000002", "2.00111000002");
+            EnterOp(vm, Operation.Mult, "-1.9");
             EnterNumber(vm, "100000.000", "100000.000");
             KeyPress(vm, "-", "-100000.000");
-            EnterOp(vm, Operation.Sub, "-10111.000002");
+            EnterOp(vm, Operation.Sub, "190000");
             KeyPress(vm, "C", "");
             KeyPress(vm, "-", "-");
             EnterNumber(vm, "000010", "-10");
             KeyPress(vm, "=", "-10");
+            EnterNumber(vm, "0004.001002", "4.001002");
+            KeyPress(vm, "=", "4.001002");
+            EnterNumber(vm, "000.001002", "0.001002");
         }
 
         private ViewModel CreateViewModel()

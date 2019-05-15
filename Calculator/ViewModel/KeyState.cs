@@ -161,6 +161,7 @@
             if (state == State.NextOp || state == State.FirstOp)
                 state = State.NoChain;
             isEvaluate = true;
+            blockZero = ZeroState.None;
         }
         public void OnNegative()
         {
@@ -189,6 +190,7 @@
             if (state == State.NoChain)
                 state = State.NextOp;
             isEvaluate = false;
+            blockZero = ZeroState.None;
         }
         private void OnOperationPerformed()
         {
