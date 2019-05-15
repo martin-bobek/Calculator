@@ -54,6 +54,8 @@ namespace Calculator.ViewModel
                 model.ClearAccumulator();
             if (state.OverwriteDisplay)
                 Display = num.ToString();
+            else if (state.ReplaceZero)
+                Display = Display.Remove(Display.Length - 1, 1) + num;
             else if (state.AppendNumber)
                 Display += num;
         }

@@ -418,6 +418,29 @@ namespace Calculator.ViewModel.Tests
             EnterNumber(vm, "000000", "-0");
             KeyPress(vm, "=", "0");
         }
+        [TestMethod]
+        public void LeadingZero()
+        {
+            var vm = CreateViewModel();
+
+            EnterNumber(vm, "0001.002.02002", "1.00202002");
+            KeyPress(vm, "=", "1.00202002");
+            KeyPress(vm, "-", "-");
+            EnterNumber(vm, "007.100.0000.02", "-7.100000002");
+            KeyPress(vm, "-", "7.100000002");
+            KeyPress(vm, "CE", "");
+            KeyPress(vm, "-", "-");
+            KeyPress(vm, "-", "");
+            EnterNumber(vm, ".101..11000.002", "0.10111000002");
+            EnterOp(vm, Operation.Mult, "0.10111000002");
+            EnterNumber(vm, "100000.000", "100000.000");
+            KeyPress(vm, "-", "-100000.000");
+            EnterOp(vm, Operation.Sub, "-10111.000002");
+            KeyPress(vm, "C", "");
+            KeyPress(vm, "-", "-");
+            EnterNumber(vm, "000010", "-10");
+            KeyPress(vm, "=", "-10");
+        }
 
         private ViewModel CreateViewModel()
         {

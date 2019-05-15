@@ -6,7 +6,7 @@
     {
         private enum State { Reset, Import, Editing, FirstOp, NextOp, Evaluated, NoChain };
         private enum NegState { Pos, Neg, Clearing, Negating };
-        private enum ZeroState { None, Adding, BlockZero, Blocking, AcceptAll };
+        private enum ZeroState { None, Adding, BlockZero, Blocking, Replacing, AcceptAll };
         private State state = State.Reset;
         private bool decimalAdded = false;
         private NegState negative = NegState.Pos;
@@ -33,6 +33,20 @@
         public bool AddZeroDecimal
         {
             get { return displayInvalid; }
+        }
+        public bool AppendNumber
+        {
+            get
+            {
+                if (blockZero == ZeroState.Blocking)
+                {
+                    blockZero = ZeroState.BlockZero;
+                    return false;
+                }
+                if (blockZero == ZeroState.Adding)
+                    blockZero = ZeroState.BlockZero;
+                return true;
+            }
         }
         public bool ClearAccumulator
         {
@@ -85,6 +99,18 @@
                 return true;
             }
         }
+        public bool ReplaceZero
+        {
+            get
+            {
+                if (blockZero == ZeroState.Replacing)
+                {
+                    blockZero = ZeroState.AcceptAll;
+                    return true;
+                }
+                return false;
+            }
+        }
         public bool StoreOperand
         {
             get
@@ -107,20 +133,6 @@
                           state != State.Reset &&
                          (isEvaluate     ||
                           state != State.FirstOp); }
-        }
-        public bool AppendNumber
-        {
-            get
-            {
-                if (blockZero == ZeroState.Blocking)
-                {
-                    blockZero = ZeroState.BlockZero;
-                    return false;
-                }
-                if (blockZero == ZeroState.Adding)
-                    blockZero = ZeroState.BlockZero;
-                return true;
-            }
         }
 
         public void OnClear()
@@ -167,6 +179,8 @@
                 else if (blockZero == ZeroState.BlockZero)
                     blockZero = ZeroState.Blocking;
             }
+            else if (blockZero == ZeroState.BlockZero)
+                blockZero = ZeroState.Replacing;
             else
                 blockZero = ZeroState.AcceptAll;
         }
