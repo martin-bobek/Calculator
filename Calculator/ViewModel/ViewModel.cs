@@ -39,6 +39,7 @@ namespace Calculator.ViewModel
                 OnPropertyChanged("Display");
             }
         }
+        public int DisplaySize { private get; set; }
         public ReadOnlyCollection<ICommand> NumCommands { get; }
         public ReadOnlyDictionary<Operation, ICommand> OpCommands { get; }
         public ICommand EvalCommand { get; }
@@ -46,6 +47,17 @@ namespace Calculator.ViewModel
         public ICommand ClearCommand { get; }
         public ICommand ClearEntryCommand { get; }
         public ICommand NegateCommand { get; }
+        private bool DisplayFull
+        {
+            get
+            {
+                int length = Display.Length;
+                if (length != 0 && Display[0] != '-')
+                    length++;
+
+                return length >= DisplaySize;
+            }
+        }
 
         private void OnNumberCommand(int num)
         {
@@ -56,7 +68,7 @@ namespace Calculator.ViewModel
                 Display = num.ToString();
             else if (state.ReplaceZero)
                 Display = Display.Remove(Display.Length - 1, 1) + num;
-            else if (state.AppendNumber)
+            else if (state.AppendNumber && !DisplayFull)
                 Display += num;
         }
         private void OnOperationCommand(Operation op)
@@ -89,7 +101,7 @@ namespace Calculator.ViewModel
                 Display = "0.";
             else if (state.AddZeroDecimal)
                 Display += "0.";
-            else if (state.AddDecimal)
+            else if (state.AddDecimal && !DisplayFull)
                 Display += ".";
             state.OnDecimalPost();
         }

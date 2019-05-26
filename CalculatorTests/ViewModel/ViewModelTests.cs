@@ -449,10 +449,29 @@ namespace Calculator.ViewModel.Tests
             KeyPress(vm, "=", "4.001002");
             EnterNumber(vm, "000.001002", "0.001002");
         }
-
-        private ViewModel CreateViewModel()
+        [TestMethod]
+        public void SizeConstrainedEntry()
         {
-            ViewModel vm = new ViewModel();
+            var vm = CreateViewModel(11);
+
+            EnterNumber(vm, "12345678901234", "1234567890");
+            KeyPress(vm, "=", "1234567890");
+            EnterNumber(vm, "1234567890.", "1234567890");
+            KeyPress(vm, "=", "1234567890");
+            KeyPress(vm, "-", "-");
+            EnterNumber(vm, "1234.567890.", "-1234.56789");
+            KeyPress(vm, "=", "-1234.56789");
+            KeyPress(vm, "-", "-");
+            EnterNumber(vm, "00001.31231231", "-1.31231231");
+            KeyPress(vm, "-", "1.31231231");
+            KeyPress(vm, "=", "1.31231231");
+            EnterNumber(vm, ".1234567890", "0.12345678");
+            KeyPress(vm, "=", "0.12345678");
+        }
+
+        private ViewModel CreateViewModel(int displaySize = 17)
+        {
+            ViewModel vm = new ViewModel { DisplaySize = displaySize };
             Assert.AreEqual("", vm.Display);
             return vm;
         }
