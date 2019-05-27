@@ -147,7 +147,16 @@ namespace Calculator.ViewModel
         }
         private void UpdateDisplay()
         {
-            Display = model.Accumulator.ToString();
+            int precision = DisplaySize;
+            string formatted;
+
+            do
+            {
+                formatted = model.Accumulator.ToString("G" + precision);
+                precision--;
+            } while (formatted.Length > DisplaySize);
+
+            Display = formatted;
         }
         private void ReadOperand()
         {

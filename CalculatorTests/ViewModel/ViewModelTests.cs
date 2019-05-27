@@ -468,6 +468,39 @@ namespace Calculator.ViewModel.Tests
             EnterNumber(vm, ".1234567890", "0.12345678");
             KeyPress(vm, "=", "0.12345678");
         }
+        [TestMethod]
+        public void SizeConstrainedResult()
+        {
+            var vm = CreateViewModel(11);
+
+            EnterNumber(vm, "123.456789");
+            EnterOp(vm, Operation.Mult, "123.456789");
+            EnterNumber(vm, "987.654321");
+            KeyPress(vm, "=", "121932.6311");
+            EnterOp(vm, Operation.Mult, "121932.6311");
+            EnterNumber(vm, "10");
+            KeyPress(vm, "=", "1219326.311");
+            KeyPress(vm, "=", "12193263.11");
+            KeyPress(vm, "=", "121932631.1");
+            KeyPress(vm, "=", "1219326311");
+            KeyPress(vm, "=", "12193263111");
+            KeyPress(vm, "=", "1.21933E+11");
+
+            EnterNumber(vm, "123.456789");
+            EnterOp(vm, Operation.Mult, "123.456789");
+            EnterNumber(vm, "987.654321");
+            KeyPress(vm, "-", "-987.654321");
+            KeyPress(vm, "=", "-121932.631");
+            EnterOp(vm, Operation.Mult, "-121932.631");
+            KeyPress(vm, "-", "-");
+            EnterNumber(vm, "10", "-10");
+            KeyPress(vm, "=", "1219326.311");
+            KeyPress(vm, "=", "-12193263.1");
+            KeyPress(vm, "=", "121932631.1");
+            KeyPress(vm, "=", "-1219326311");
+            KeyPress(vm, "=", "12193263111");
+            KeyPress(vm, "=", "-1.2193E+11");
+        }
 
         private ViewModel CreateViewModel(int displaySize = 17)
         {
