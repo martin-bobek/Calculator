@@ -9,7 +9,7 @@
         ResizeMode="NoResize" Title="Calculator">
 
     <Window.DataContext>
-        <vm:ViewModel DisplaySize="17" />
+        <vm:ViewModel DisplaySize="16" />
     </Window.DataContext>
 
     <Window.Resources>
