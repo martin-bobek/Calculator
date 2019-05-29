@@ -17,6 +17,48 @@
         <Thickness x:Key="btnMargin">5</Thickness>
     </Window.Resources>
 
+    <Window.InputBindings>
+        <KeyBinding Command="{Binding NumCommands[0]}" Key="D0" />
+        <KeyBinding Command="{Binding NumCommands[0]}" Key="NumPad0" />
+        <KeyBinding Command="{Binding NumCommands[1]}" Key="D1" />
+        <KeyBinding Command="{Binding NumCommands[1]}" Key="NumPad1" />
+        <KeyBinding Command="{Binding NumCommands[2]}" Key="D2" />
+        <KeyBinding Command="{Binding NumCommands[2]}" Key="NumPad2" />
+        <KeyBinding Command="{Binding NumCommands[3]}" Key="D3" />
+        <KeyBinding Command="{Binding NumCommands[3]}" Key="NumPad3" />
+        <KeyBinding Command="{Binding NumCommands[4]}" Key="D4" />
+        <KeyBinding Command="{Binding NumCommands[4]}" Key="NumPad4" />
+        <KeyBinding Command="{Binding NumCommands[5]}" Key="D5" />
+        <KeyBinding Command="{Binding NumCommands[5]}" Key="NumPad5" />
+        <KeyBinding Command="{Binding NumCommands[6]}" Key="D6" />
+        <KeyBinding Command="{Binding NumCommands[6]}" Key="NumPad6" />
+        <KeyBinding Command="{Binding NumCommands[7]}" Key="D7" />
+        <KeyBinding Command="{Binding NumCommands[7]}" Key="NumPad7" />
+        <KeyBinding Command="{Binding NumCommands[8]}" Key="D8" />
+        <KeyBinding Command="{Binding NumCommands[8]}" Key="NumPad8" />
+        <KeyBinding Command="{Binding NumCommands[9]}" Key="D9" />
+        <KeyBinding Command="{Binding NumCommands[9]}" Key="NumPad9" />
+
+        <KeyBinding Command="{Binding DecCommand}" Key="OemPeriod" />
+        <KeyBinding Command="{Binding DecCommand}" Key="Decimal" />
+        <KeyBinding Command="{Binding NegateCommand}" Key="n" />
+        <KeyBinding Command="{Binding NegateCommand}" Key="n" Modifiers="Shift" />
+
+        <KeyBinding Command="{Binding ClearEntryCommand}" Key="Backspace" />
+        <KeyBinding Command="{Binding ClearCommand}" Key="Esc" />
+
+        <KeyBinding Command="{Binding OpCommands[Mult]}" Key="Multiply" />
+        <KeyBinding Command="{Binding OpCommands[Mult]}" Key="D8" Modifiers="Shift" />
+        <KeyBinding Command="{Binding OpCommands[Div]}" Key="Divide" />
+        <KeyBinding Command="{Binding OpCommands[Div]}" Key="OemQuestion" />
+        <KeyBinding Command="{Binding OpCommands[Add]}" Key="Add" />
+        <KeyBinding Command="{Binding OpCommands[Add]}" Key="OemPlus" Modifiers="Shift" />
+        <KeyBinding Command="{Binding OpCommands[Sub]}" Key="Subtract" />
+        <KeyBinding Command="{Binding OpCommands[Sub]}" Key="OemMinus" />
+        <KeyBinding Command="{Binding EvalCommand}" Key="Enter" />
+        <KeyBinding Command="{Binding EvalCommand}" Key="OemPlus" />
+    </Window.InputBindings>
+
     <DockPanel>
         <TextBox DockPanel.Dock="Top" Margin="10,10,10,0" FontSize="24"
                  FontFamily="Consolas" TextAlignment="Right" IsReadOnly="True"
